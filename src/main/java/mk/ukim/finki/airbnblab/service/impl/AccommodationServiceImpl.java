@@ -69,4 +69,18 @@ private final AccommodationRepository  accommodationRepository;
         accommodationRepository.deleteById(id);
     }
 
+    public Optional<Accommodation> reserveRooms(Long id, int roomsToReserve) {
+        Optional<Accommodation> accommodationOpt = findById(id);
+
+        if (accommodationOpt.isPresent()) {
+            Accommodation accommodation = accommodationOpt.get();
+
+            if (accommodation.getNumRooms() >= roomsToReserve) {
+                accommodation.setNumRooms(accommodation.getNumRooms() - roomsToReserve);
+                return Optional.of(accommodationRepository.save(accommodation));
+            }
+        }
+        return Optional.empty();
+    }
+
 }

@@ -12,5 +12,7 @@ public interface AccommodationService {
     Optional<Accommodation> findById(Long id);
     Optional<Accommodation> save(AccommodationDto accommodation);
     Optional<Accommodation> update(Long id,AccommodationDto accommodation);
+
+     Optional<Accommodation> reserveRooms(Long id, int roomsToReserve);
     void deleteById(Long id);
 }

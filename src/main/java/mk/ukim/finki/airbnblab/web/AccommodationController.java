@@ -87,4 +87,19 @@ public class AccommodationController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PutMapping("/{id}/reserve")
+    @Operation(summary = "Резервирај соби", description = "Одзема од бројот на слободни соби за дадено сместување")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешно резервирано сместување"),
+            @ApiResponse(responseCode = "400", description = "Недоволно слободни соби"),
+            @ApiResponse(responseCode = "404", description = "Сместувањето не е пронајдено")
+    })
+    public ResponseEntity<Accommodation> reserveAccommodation(@PathVariable Long id, @RequestParam int roomsToReserve) {
+        Optional<Accommodation> reservedAccommodation = accommodationService.reserveRooms(id, roomsToReserve);
+        return reservedAccommodation.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+
 }
