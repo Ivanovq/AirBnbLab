@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import mk.ukim.finki.airbnblab.DTO.CreateHostDTO;
+import mk.ukim.finki.airbnblab.DTO.DisplayHostDTO;
 import mk.ukim.finki.airbnblab.model.Host;
-import mk.ukim.finki.airbnblab.model.dto.HostDto;
-import mk.ukim.finki.airbnblab.service.HostService;
+import mk.ukim.finki.airbnblab.service.application.HostApplicationService;
+import mk.ukim.finki.airbnblab.service.domain.HostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,17 +20,16 @@ import java.util.Optional;
 @Tag(name = "Host", description = "API за управување со домаќини")
 public class HostController {
 
-    private final HostService hostService;
+    private final HostApplicationService hostService;
 
-    public HostController(HostService hostService) {
+    public HostController(HostApplicationService hostService) {
         this.hostService = hostService;
     }
 
     @GetMapping
     @Operation(summary = "Превземи сите домаќини", description = "Ги враќа сите домаќини во системот")
-    public ResponseEntity<List<Host>> findAll() {
-        List<Host> hosts = hostService.findAll();
-        return ResponseEntity.ok(hosts);
+    public List<DisplayHostDTO> findAll() {
+        return hostService.findAll();
     }
 
     @GetMapping("/{id}")
@@ -37,7 +38,7 @@ public class HostController {
             @ApiResponse(responseCode = "200", description = "Пронајден домаќин"),
             @ApiResponse(responseCode = "404", description = "Домаќинот не е пронајден")
     })
-    public ResponseEntity<Host> findById(@PathVariable Long id) {
+    public ResponseEntity<DisplayHostDTO> findById(@PathVariable Long id) {
         return hostService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -49,10 +50,8 @@ public class HostController {
             @ApiResponse(responseCode = "201", description = "Домаќинот е успешно креиран"),
             @ApiResponse(responseCode = "400", description = "Грешка при креирање")
     })
-    public ResponseEntity<Host> save(@RequestBody HostDto host) {
-        Optional<Host> savedHost = hostService.save(host);
-        return savedHost.map(h -> ResponseEntity.status(201).body(h))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+    public ResponseEntity<DisplayHostDTO> save(@RequestBody CreateHostDTO host) {
+        return hostService.save(host).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/edit/{id}")
@@ -62,7 +61,7 @@ public class HostController {
             @ApiResponse(responseCode = "400", description = "Грешка при ажурирање"),
             @ApiResponse(responseCode = "404", description = "Домаќинот не е пронајден")
     })
-    public ResponseEntity<Host> update(@PathVariable Long id, @RequestBody HostDto host) {
+    public ResponseEntity<DisplayHostDTO> update(@PathVariable Long id, @RequestBody CreateHostDTO host) {
         return hostService.update(id, host)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());

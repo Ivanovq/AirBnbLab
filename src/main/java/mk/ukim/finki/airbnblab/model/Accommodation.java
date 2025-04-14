@@ -21,7 +21,7 @@ public class Accommodation {
     @ManyToOne
     Host host;
     Integer numRooms;
-
+    boolean isAvailable;
     public Accommodation() {
     }
 
@@ -30,6 +30,15 @@ public class Accommodation {
         this.category = category;
         this.host = host;
         this.numRooms = numRooms;
+        this.isAvailable=true;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 
     public void setId(Long id) {

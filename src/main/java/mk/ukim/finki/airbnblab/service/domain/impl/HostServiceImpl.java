@@ -1,10 +1,9 @@
-package mk.ukim.finki.airbnblab.service.impl;
+package mk.ukim.finki.airbnblab.service.domain.impl;
 
 import mk.ukim.finki.airbnblab.model.Host;
-import mk.ukim.finki.airbnblab.model.dto.HostDto;
 import mk.ukim.finki.airbnblab.repository.HostRepository;
-import mk.ukim.finki.airbnblab.service.CountryService;
-import mk.ukim.finki.airbnblab.service.HostService;
+import mk.ukim.finki.airbnblab.service.domain.CountryService;
+import mk.ukim.finki.airbnblab.service.domain.HostService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,16 +31,16 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public Optional<Host> save(HostDto host) {
-        return Optional.of(hostRepository.save(new Host(host.getName(), host.getSurname(),countryService.findById(host.getCountry()).get())));
+    public Optional<Host> save(Host host) {
+        return Optional.of(hostRepository.save(new Host(host.getName(), host.getSurname(),countryService.findById(host.getCountry().getId()).get())));
     }
 
     @Override
-    public Optional<Host> update(Long id, HostDto host) {
+    public Optional<Host> update(Long id, Host host) {
         return hostRepository.findById(id).map(existing->{
             if(host.getCountry()!=null)
             {
-                existing.setCountry(countryService.findById(host.getCountry()).get());
+                existing.setCountry(countryService.findById(host.getCountry().getId()).get());
             }
             if(host.getName()!=null)
             {

@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import mk.ukim.finki.airbnblab.DTO.CreateCountryDTO;
+import mk.ukim.finki.airbnblab.DTO.DisplayCountryDTO;
 import mk.ukim.finki.airbnblab.model.Country;
-import mk.ukim.finki.airbnblab.model.dto.CountryDto;
-import mk.ukim.finki.airbnblab.service.CountryService;
+import mk.ukim.finki.airbnblab.service.application.CountryApplicationService;
+import mk.ukim.finki.airbnblab.service.domain.CountryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,17 +20,16 @@ import java.util.Optional;
 @Tag(name = "Country", description = "API за управување со земји")
 public class CountryController {
 
-    private final CountryService countryService;
+    private final CountryApplicationService countryService;
 
-    public CountryController(CountryService countryService) {
+    public CountryController(CountryApplicationService countryService) {
         this.countryService = countryService;
     }
 
     @GetMapping
     @Operation(summary = "Превземи сите земји", description = "Ги враќа сите земји во системот")
-    public ResponseEntity<List<Country>> findAll() {
-        List<Country> countries = countryService.findAll();
-        return ResponseEntity.ok(countries);
+    public List<DisplayCountryDTO> findAll() {
+        return countryService.findAll();
     }
 
     @GetMapping("/{id}")
@@ -38,10 +39,8 @@ public class CountryController {
             @ApiResponse(responseCode = "400", description = "Грешен барање"),
             @ApiResponse(responseCode = "404", description = "Земјата не е пронајдена")
     })
-    public ResponseEntity<Country> findById(@PathVariable Long id) {
-        Optional<Country> country = countryService.findById(id);
-        return country.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<DisplayCountryDTO> findById(@PathVariable Long id) {
+        return countryService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/add")
@@ -50,10 +49,8 @@ public class CountryController {
             @ApiResponse(responseCode = "201", description = "Земјата е успешно креирана"),
             @ApiResponse(responseCode = "400", description = "Грешка при креирање")
     })
-    public ResponseEntity<Country> save(@RequestBody CountryDto country) {
-        Optional<Country> savedCountry = countryService.save(country);
-        return savedCountry.map(c -> ResponseEntity.status(201).body(c))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+    public ResponseEntity<DisplayCountryDTO> save(@RequestBody CreateCountryDTO country) {
+        return countryService.save(country).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/edit/{id}")
@@ -63,10 +60,8 @@ public class CountryController {
             @ApiResponse(responseCode = "400", description = "Грешка при ажурирање"),
             @ApiResponse(responseCode = "404", description = "Земјата не е пронајдена")
     })
-    public ResponseEntity<Country> update(@PathVariable Long id, @RequestBody CountryDto country) {
-        Optional<Country> updatedCountry = countryService.update(id, country);
-        return updatedCountry.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+    public ResponseEntity<DisplayCountryDTO> update(@PathVariable Long id, @RequestBody CreateCountryDTO country) {
+        return countryService.update(id,country).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/delete/{id}")

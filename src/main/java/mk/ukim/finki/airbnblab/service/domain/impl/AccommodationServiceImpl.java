@@ -1,11 +1,11 @@
-package mk.ukim.finki.airbnblab.service.impl;
+package mk.ukim.finki.airbnblab.service.domain.impl;
 
 import mk.ukim.finki.airbnblab.model.Accommodation;
-import mk.ukim.finki.airbnblab.model.dto.AccommodationDto;
+import mk.ukim.finki.airbnblab.model.Enumerations.Category;
 import mk.ukim.finki.airbnblab.repository.AccommodationRepository;
-import mk.ukim.finki.airbnblab.service.AccommodationService;
-import mk.ukim.finki.airbnblab.service.CountryService;
-import mk.ukim.finki.airbnblab.service.HostService;
+import mk.ukim.finki.airbnblab.service.domain.AccommodationService;
+import mk.ukim.finki.airbnblab.service.domain.CountryService;
+import mk.ukim.finki.airbnblab.service.domain.HostService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,19 +33,19 @@ private final AccommodationRepository  accommodationRepository;
     }
 
     @Override
-    public Optional<Accommodation> save(AccommodationDto accommodation) {
-        if(accommodation.getHost()!=null && hostService.findById(accommodation.getHost()).isPresent() )
-         return Optional.of(accommodationRepository.save(new Accommodation(accommodation.getName(), accommodation.getCategory(),hostService.findById(accommodation.getHost()).get(),accommodation.getNumRooms())));
+    public Optional<Accommodation> save(Accommodation accommodation) {
+        if(accommodation.getHost()!=null && hostService.findById(accommodation.getHost().getId()).isPresent() )
+         return Optional.of(accommodationRepository.save(new Accommodation(accommodation.getName(), accommodation.getCategory(),hostService.findById(accommodation.getHost().getId()).get(),accommodation.getNumRooms())));
 
     return Optional.empty();
     }
 
     @Override
-    public Optional<Accommodation> update(Long id, AccommodationDto accommodation) {
+    public Optional<Accommodation> update(Long id, Accommodation accommodation) {
         return accommodationRepository.findById(id).map(existing->{
-            if(accommodation.getHost()!=null&&hostService.findById(accommodation.getHost()).isPresent())
+            if(accommodation.getHost()!=null&&hostService.findById(accommodation.getHost().getId()).isPresent())
             {
-                existing.setHost(hostService.findById(accommodation.getHost()).get());
+                existing.setHost(hostService.findById(accommodation.getHost().getId()).get());
             }
             if(accommodation.getCategory()!=null)
             {
@@ -81,6 +81,11 @@ private final AccommodationRepository  accommodationRepository;
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<Accommodation> findByCategory(Category category,Long id) {
+        return accommodationRepository.findByCategoryAndIdNot(category,id);
     }
 
 }

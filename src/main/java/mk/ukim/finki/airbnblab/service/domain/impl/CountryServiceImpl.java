@@ -1,9 +1,8 @@
-package mk.ukim.finki.airbnblab.service.impl;
+package mk.ukim.finki.airbnblab.service.domain.impl;
 
 import mk.ukim.finki.airbnblab.model.Country;
-import mk.ukim.finki.airbnblab.model.dto.CountryDto;
 import mk.ukim.finki.airbnblab.repository.CountryRepository;
-import mk.ukim.finki.airbnblab.service.CountryService;
+import mk.ukim.finki.airbnblab.service.domain.CountryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,12 +28,12 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public Optional<Country> save(CountryDto country) {
+    public Optional<Country> save(Country country) {
         return Optional.of(countryRepository.save(new Country(country.getName(), country.getContinent())));
     }
 
     @Override
-    public Optional<Country> update(Long id, CountryDto country) {
+    public Optional<Country> update(Long id, Country country) {
         return countryRepository.findById(id).map(existing->{
             if(country.getName()!=null)
             {
