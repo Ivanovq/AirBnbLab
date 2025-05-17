@@ -6,6 +6,7 @@ import mk.ukim.finki.airbnblab.model.Accommodation;
 import mk.ukim.finki.airbnblab.model.Country;
 import mk.ukim.finki.airbnblab.model.Enumerations.Category;
 import mk.ukim.finki.airbnblab.model.Host;
+import mk.ukim.finki.airbnblab.model.views.AccommodationsByHostView;
 import mk.ukim.finki.airbnblab.service.application.AccommodationApplicationService;
 import mk.ukim.finki.airbnblab.service.domain.AccommodationService;
 import mk.ukim.finki.airbnblab.service.domain.CountryService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -80,6 +82,12 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
     public void deleteById(Long id) {
         accommodationService.deleteById(id);
     }
+
+    @Override
+    public List<AccommodationsByHostView> findAccommodationsByHost() {
+        return accommodationService.findAccommodationsByHost();
+    }
+
 
 
 }

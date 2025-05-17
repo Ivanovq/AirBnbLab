@@ -4,6 +4,7 @@ import mk.ukim.finki.airbnblab.DTO.CreateAccommodationDTO;
 import mk.ukim.finki.airbnblab.DTO.DisplayAccommodationDTO;
 import mk.ukim.finki.airbnblab.model.Accommodation;
 import mk.ukim.finki.airbnblab.model.Enumerations.Category;
+import mk.ukim.finki.airbnblab.model.views.AccommodationsByHostView;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,5 +19,6 @@ public interface AccommodationApplicationService {
     Optional<DisplayAccommodationDTO> reserveRooms(Long id, int roomsToReserve);
     List<DisplayAccommodationDTO> findByCategory(Category category, Long id);
     void deleteById(Long id);
+    List<AccommodationsByHostView> findAccommodationsByHost();
 
 }

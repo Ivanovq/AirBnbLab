@@ -8,6 +8,7 @@ import mk.ukim.finki.airbnblab.DTO.CreateAccommodationDTO;
 import mk.ukim.finki.airbnblab.DTO.DisplayAccommodationDTO;
 import mk.ukim.finki.airbnblab.model.Accommodation;
 import mk.ukim.finki.airbnblab.model.Enumerations.Category;
+import mk.ukim.finki.airbnblab.model.views.AccommodationsByHostView;
 import mk.ukim.finki.airbnblab.service.application.AccommodationApplicationService;
 import mk.ukim.finki.airbnblab.service.domain.AccommodationService;
 import mk.ukim.finki.airbnblab.service.domain.CountryService;
@@ -15,6 +16,7 @@ import mk.ukim.finki.airbnblab.service.domain.HostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +40,12 @@ public class AccommodationController {
     @Operation(summary = "Превземи сите сместувања", description = "Ги враќа сите сместувања во системот")
     public List<DisplayAccommodationDTO> findAll() {
         return  accommodationApplicationService.findAll();
+    }
+
+    @Operation(summary = "Get accommodations by host", description = "Retrieves a list of hosts and number of accommodations.")
+    @GetMapping("/by-host")
+    public List<AccommodationsByHostView> findAccommodationsByHost() {
+        return accommodationApplicationService.findAccommodationsByHost();
     }
 
     @GetMapping("/{id}")
@@ -105,6 +113,14 @@ public class AccommodationController {
         List<DisplayAccommodationDTO> list=accommodationApplicationService.findByCategory(category,id).stream().toList();
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("/accommodation-types")
+    public List<String> getAccommodationTypes() {
+        return Arrays.stream(Category.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
+
 
 
 }

@@ -6,7 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mk.ukim.finki.airbnblab.DTO.CreateHostDTO;
 import mk.ukim.finki.airbnblab.DTO.DisplayHostDTO;
+import mk.ukim.finki.airbnblab.model.Country;
 import mk.ukim.finki.airbnblab.model.Host;
+import mk.ukim.finki.airbnblab.model.projections.HostProjection;
+import mk.ukim.finki.airbnblab.model.views.HostsByCountryView;
 import mk.ukim.finki.airbnblab.service.application.HostApplicationService;
 import mk.ukim.finki.airbnblab.service.domain.HostService;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,18 @@ public class HostController {
     @Operation(summary = "Превземи сите домаќини", description = "Ги враќа сите домаќини во системот")
     public List<DisplayHostDTO> findAll() {
         return hostService.findAll();
+    }
+
+    @Operation(summary = "Get hosts by country", description = "Retrieves a list of countries and number of hosts.")
+    @GetMapping("/by-country")
+    public List<HostsByCountryView> findHostsByCountry() {
+        return hostService.findHostsByCountry();
+    }
+
+    @Operation(summary = "Get names and surnames of hosts", description = "Retrieves a list of hosts with their names and surnames.")
+    @GetMapping("/names")
+    public List<HostProjection> getNamesAndSurnamesForHosts() {
+        return hostService.getNamesAndSurnames();
     }
 
     @GetMapping("/{id}")
@@ -80,4 +95,17 @@ public class HostController {
         }
         return ResponseEntity.notFound().build();
     }
+
+
+    @Operation(summary = "Get hosts by country", description = "Retrieves a list of hosts by country.")
+    @GetMapping("/list-by-country")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пронајдени домаќини за дадената држава"),
+            @ApiResponse(responseCode = "404", description = "Домаќините за дадената држава не се пронајдени")
+    })
+    public ResponseEntity<List<DisplayHostDTO>> findHostsByCountry(@RequestParam Long countryId) {
+        List<DisplayHostDTO> hosts = hostService.findByCountryId(countryId);
+        return hosts.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(hosts);
+    }
+
 }

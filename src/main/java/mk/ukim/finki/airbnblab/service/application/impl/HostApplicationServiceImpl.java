@@ -3,6 +3,9 @@ package mk.ukim.finki.airbnblab.service.application.impl;
 import mk.ukim.finki.airbnblab.DTO.CreateHostDTO;
 import mk.ukim.finki.airbnblab.DTO.DisplayHostDTO;
 import mk.ukim.finki.airbnblab.model.Country;
+import mk.ukim.finki.airbnblab.model.Host;
+import mk.ukim.finki.airbnblab.model.projections.HostProjection;
+import mk.ukim.finki.airbnblab.model.views.HostsByCountryView;
 import mk.ukim.finki.airbnblab.service.application.HostApplicationService;
 import mk.ukim.finki.airbnblab.service.domain.CountryService;
 import mk.ukim.finki.airbnblab.service.domain.HostService;
@@ -51,5 +54,20 @@ public class HostApplicationServiceImpl implements HostApplicationService {
     @Override
     public void deleteById(Long id) {
         hostService.deleteById(id);
+    }
+
+    @Override
+    public List<HostsByCountryView> findHostsByCountry() {
+        return hostService.findHostsByCountry();
+    }
+
+    @Override
+    public List<HostProjection> getNamesAndSurnames() {
+        return hostService.getNamesAndSurnames();
+    }
+
+    @Override
+    public List<DisplayHostDTO> findByCountryId(Long countryId) {
+        return hostService.findByCountryId(countryId).stream().map(DisplayHostDTO::from).toList();
     }
 }

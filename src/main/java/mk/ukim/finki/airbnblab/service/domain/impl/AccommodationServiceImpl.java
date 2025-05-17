@@ -2,7 +2,9 @@ package mk.ukim.finki.airbnblab.service.domain.impl;
 
 import mk.ukim.finki.airbnblab.model.Accommodation;
 import mk.ukim.finki.airbnblab.model.Enumerations.Category;
+import mk.ukim.finki.airbnblab.model.views.AccommodationsByHostView;
 import mk.ukim.finki.airbnblab.repository.AccommodationRepository;
+import mk.ukim.finki.airbnblab.repository.AccommodationsByHostViewRepository;
 import mk.ukim.finki.airbnblab.service.domain.AccommodationService;
 import mk.ukim.finki.airbnblab.service.domain.CountryService;
 import mk.ukim.finki.airbnblab.service.domain.HostService;
@@ -15,10 +17,12 @@ import java.util.Optional;
 public class AccommodationServiceImpl implements AccommodationService {
 
 private final HostService hostService;
+    private final AccommodationsByHostViewRepository accommodationsByHostViewRepository;
 private final AccommodationRepository  accommodationRepository;
 
-    public AccommodationServiceImpl(HostService hostService, CountryService countryService, AccommodationRepository accommodationRepository) {
+    public AccommodationServiceImpl(HostService hostService, CountryService countryService, AccommodationsByHostViewRepository accommodationsByHostViewRepository, AccommodationRepository accommodationRepository) {
         this.hostService = hostService;
+        this.accommodationsByHostViewRepository = accommodationsByHostViewRepository;
         this.accommodationRepository = accommodationRepository;
     }
 
@@ -68,6 +72,17 @@ private final AccommodationRepository  accommodationRepository;
 
         accommodationRepository.deleteById(id);
     }
+
+    @Override
+    public List<AccommodationsByHostView> findAccommodationsByHost() {
+        return accommodationsByHostViewRepository.findAll();
+    }
+
+    @Override
+    public void refreshMaterializedView() {
+        accommodationsByHostViewRepository.refreshMaterializedView();
+    }
+
 
     public Optional<Accommodation> reserveRooms(Long id, int roomsToReserve) {
         Optional<Accommodation> accommodationOpt = findById(id);

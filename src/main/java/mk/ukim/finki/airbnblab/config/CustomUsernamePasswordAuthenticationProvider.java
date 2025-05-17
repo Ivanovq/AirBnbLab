@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 @Component
 public class CustomUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
@@ -49,6 +48,3 @@ public class CustomUsernamePasswordAuthenticationProvider implements Authenticat
         return aClass.equals(UsernamePasswordAuthenticationToken.class);
     }
 }
-
-
-
